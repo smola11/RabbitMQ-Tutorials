@@ -21,6 +21,9 @@ public class NewTask {
 
         String message = getMessage(args);
 
+        boolean durable = true;
+        channel.queueDeclare("task_queue", durable, false, false, null);
+        // we are marking messages as PERSISTENT (they are not dead even if Rabbit restarts)
         channel.basicPublish("", TASK_QUEUE_NAME, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
         System.out.println(" [x] Sent '" + message + "'");
     }
