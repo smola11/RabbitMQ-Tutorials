@@ -17,6 +17,7 @@ public class Worker {
         final Channel channel = connection.createChannel();
 
         System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+        channel.basicQos(1); // limit the number of unacknowledged messages on a channel
 
         Consumer consumer = new DefaultConsumer(channel) {
             @Override
@@ -27,10 +28,11 @@ public class Worker {
                     doWork(message);
                 } finally {
                     System.out.println(" [x] Done");
+                    channel.basicAck(envelope.getDeliveryTag(), false); // acknowledge that message is delivered;
                 }
             }
         };
-        boolean autoAck = true;
+        boolean autoAck = false; // auto acknowledge turned off;
         channel.basicConsume(TASK_QUEUE_NAME, autoAck, consumer);
     }
 
