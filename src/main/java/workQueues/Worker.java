@@ -21,6 +21,7 @@ public class Worker {
         channel.queueDeclare("task_queue", durable, false, false, null);
         System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
         channel.basicQos(1); // limit the number of unacknowledged messages on a channel
+        // this tells RabbitMQ not to give more than one message to a worker at a time;
 
         Consumer consumer = new DefaultConsumer(channel) {
             @Override
