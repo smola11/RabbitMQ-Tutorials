@@ -21,7 +21,6 @@ public class NewTask {
 
         String message = getMessage(args);
 
-        channel.queueDeclare(TASK_QUEUE_NAME, true, false, false, null);
         channel.basicPublish("", TASK_QUEUE_NAME, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
         System.out.println(" [x] Sent '" + message + "'");
     }
