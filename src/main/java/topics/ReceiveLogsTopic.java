@@ -1,13 +1,13 @@
-package routing;
+package topics;
 
 import com.rabbitmq.client.*;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-public class ReceiveLogsDirect {
+public class ReceiveLogsTopic {
 
-    private static final String EXCHANGE_NAME = "direct_logs";
+    private static final String EXCHANGE_NAME = "topic_logs";
 
     public static void main(String[] args) throws IOException, TimeoutException {
 
@@ -17,16 +17,16 @@ public class ReceiveLogsDirect {
         Channel channel = connection.createChannel();
 
 
-        channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
+        channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.TOPIC);
         String queueName = channel.queueDeclare().getQueue();
 
         if (args.length < 1) {
-            System.err.println("Usage: ReceiveLogsTopic [info] [warning] [error]");
+            System.err.println("Usage: ReceiveLogsTopic [binding_key]...");
             System.exit(1);
         }
 
-        for (String severity : args) {
-            channel.queueBind(queueName, EXCHANGE_NAME, severity);
+        for (String bindingKey : args) {
+            channel.queueBind(queueName, EXCHANGE_NAME, bindingKey);
         }
         System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 
